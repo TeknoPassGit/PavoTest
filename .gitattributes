@@ -1,0 +1,18 @@
+# Normalize line endings: store LF in the repository.
+* text=auto
+
+# Visual Studio / Windows files keep CRLF in the working tree.
+*.cs      text eol=crlf
+*.csproj  text eol=crlf
+*.sln     text eol=crlf
+*.resx    text eol=crlf
+*.config  text eol=crlf
+*.settings text eol=crlf
+*.md      text eol=crlf
+
+# Binary files
+*.png     binary
+*.jpg     binary
+*.ico     binary
+*.dll     binary
+*.exe     binary
