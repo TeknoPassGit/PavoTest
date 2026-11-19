@@ -31,3 +31,6 @@ PavoTest.ini
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Yerel tahsilat verileri (ornek: data.example.csv)
+data.csv

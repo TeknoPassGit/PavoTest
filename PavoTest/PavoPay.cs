@@ -6,7 +6,7 @@ using System.Net.Http;
 
 namespace PavoTest
 {
-    class PavoPay
+    partial class PavoPay
     {
         public List<string> lstLog = new List<string>();
         public List<string> fisyazitems = new List<string>();
@@ -81,6 +81,7 @@ namespace PavoTest
                 {
                     if (prmOdemeTipi == 0) prmAsama = "ODEME";
                     if (prmOdemeTipi == 1) prmAsama = "ODEME";
+                    if (prmOdemeTipi == HgsIslemTipi) prmAsama = "ODEME";
                     if (prmOdemeTipi == 2) prmAsama = "GUNSONU";
                     if (prmOdemeTipi == 3) prmAsama = "IPTAL";
                     if (prmOdemeTipi == 4) prmAsama = "PARAMETRE";
@@ -110,8 +111,6 @@ namespace PavoTest
             prmTutar = tutar;
             
 
-            string birim = "KGM";
-            birim = "C62";
 
             string ct = "\"";
             string adres = "http://" + ip + "/Pairing";            
@@ -123,28 +122,11 @@ namespace PavoTest
                 parametre = "{" + ct + "TransactionHandle" + ct + ":{" + ct + "SerialNumber" + ct + " : " + ct + CihazSeriNo + ct + ", " + ct + "TransactionDate" + ct + ": " + ct + prmTranDate + ct + ", " + ct + "TransactionSequence" + ct + ": " + prmTranNo.ToString() + ", " + ct + "Fingerprint" + ct + ":" + ct + prmFingerPrint + ct + " }}";
             }
 
-            /*
-            if (prmAsama == "ODEME")
-            {               
-                adres = "http://" + ip + "/CompleteSale";                
-                parametre = "{" + ct + "TransactionHandle" + ct + ": {" + ct + "SerialNumber" + ct + ": " + ct + CihazSeriNo + ct + "," + ct + "Fingerprint" + ct + ": " + ct + prmFingerPrint + ct + "," + ct + "TransactionSequence" + ct + ": " + prmTranNo.ToString() + "," + ct + "TransactionDate" + ct + ": " + ct + prmTranDate + ct + "}," + ct + "Sale" + ct + ": {" + ct + "PaymentInformations" + ct + ": [{" + ct + "Mediator" + ct + ": " + (odemetipi + 1).ToString() + "," + ct + "Amount" + ct + ": " + tutar.ToString() + "}],    " + ct + "RefererApp" + ct + ": " + ct + "TeknoPass Pay" + ct + "," + ct + "RefererAppVersion" + ct + ": " + ct + "1.0.0" + ct + "," + ct + "MainDocumentType" + ct + ": 1," + ct + "GrossPrice" + ct + ": " + tutar.ToString() + "," + ct + "TotalPrice" + ct + ": " + tutar.ToString() + "," + ct + "SendPhoneNotification" + ct + ": false," + ct + "SendEMailNotification" + ct + ": false," + ct + "ShowCreditCardMenu" + ct + ": false," + ct + "SelectedSlots" + ct + ": []," + ct + "AllowDismissCardRead" + ct + ": false," + ct + "CardReadTimeout" + ct + ": 30," + ct + "SkipAmountCash" + ct + ": true," + ct + "CancelPaymentLater" + ct + ": true," + ct + "AskCustomer" + ct + ": false," + ct + "SendResponseBeforePrint" + ct + ": true," + ct + "TryAgainOnPaymentFailure" + ct + ": false," + ct + "AddedSaleItems" + ct + ": [{" + ct + "Name" + ct + ": " + ct + TrSil(prmpavoislemucreti) + ct + "," + ct + "IsGeneric" + ct + ": false," + ct + "UnitCode" + ct + ": " + ct + birim + ct + "," + ct + "TaxGroupCode" + ct + ": " + ct + "KDV20" + ct + "," + ct + "ItemQuantity" + ct + ": 1," + ct + "UnitPriceAmount" + ct + ": " + tutar.ToString() + "," + ct + "GrossPriceAmount" + ct + ": " + tutar.ToString() + "," + ct + "TotalPriceAmount" + ct + ": " + tutar.ToString() + "," + ct + "ReservedText" + ct + ": " + ct + "TEST0001" + ct + "," + ct + "PriceEffect" + ct + ": {}}]," + ct + "ReceiptInformation" + ct + ":{" + ct + "ReceiptImageEnabled" + ct + ":true}}}";
-            }
-            */
-
             if (prmAsama == "ODEME")
             {
-                string customerpart = "";
-
-                if (secilenCari.CARIADI != "")
-                {
-                    customerpart = "," + ct + "CustomerParty" + ct + ": {" + ct + "CustomerType" + ct + ": "+ secilenCari.MUSTERITURU.ToString() + "," + ct + "FirstName" + ct + ": " + ct + secilenCari.ADI + ct + "," + ct + "MiddleName" + ct + ": " + ct + "" + ct + "," + ct + "FamilyName" + ct + ": " + ct + secilenCari.SOYADI + ct + "," + ct + "CompanyName" + ct + ": " + ct + secilenCari.CARIADI + ct + "," + ct + "TaxOfficeCode" + ct + ":" + ct + secilenCari.VERGIDAIRESI + ct + "," + ct + "TaxNumber" + ct + ":" + ct + secilenCari.VERGINO + ct + "," + ct + "Phone" + ct + ": " + ct + secilenCari.TEL1 + ct + "," + ct + "EMail" + ct + ":" + ct + secilenCari.EMAIL + ct + "," + ct + "Country" + ct + ":" + ct + secilenCari.ULKE + ct + "," + ct + "City" + ct + ":" + ct + secilenCari.IL + ct + "," + ct + "District" + ct + ":" + ct + secilenCari.ILCE + ct + "," + ct + "Neighborhood" + ct + ":" + ct + "" + ct + "," + ct + "Address" + ct + ":" + ct + secilenCari.ADRES + ct + "," + ct + "IsEFaturaMerchant" + ct + ":" + secilenCari.EFATURA.ToString() + "}";
-                    customerpart = customerpart.Replace("True", "true").Replace("False", "false");
-                }
-
                 adres = "http://" + ip + "/CompleteSale";
-                parametre = "{" + ct + "TransactionHandle" + ct + ": {" + ct + "SerialNumber" + ct + ": " + ct + CihazSeriNo + ct + "," + ct + "Fingerprint" + ct + ": " + ct + prmFingerPrint + ct + "," + ct + "TransactionSequence" + ct + ": " + prmTranNo.ToString() + "," + ct + "TransactionDate" + ct + ": " + ct + prmTranDate + ct + "}," + ct + "Sale" + ct + ": {" + ct + "PaymentInformations" + ct + ": [{" + ct + "Mediator" + ct + ": " + (odemetipi + 1).ToString() + "," + ct + "Amount" + ct + ": " + tutar.ToString() + "}],    " + ct + "RefererApp" + ct + ": " + ct + "TeknoPass Pay" + ct + "," + ct + "RefererAppVersion" + ct + ": " + ct + "1.0.0" + ct + "," + ct + "MainDocumentType" + ct + ": 1," + ct + "GrossPrice" + ct + ": " + tutar.ToString() + "," + ct + "TotalPrice" + ct + ": " + tutar.ToString() + "," + ct + "SendPhoneNotification" + ct + ": false," + ct + "SendEMailNotification" + ct + ": false," + ct + "ShowCreditCardMenu" + ct + ": false," + ct + "SelectedSlots" + ct + ": []," + ct + "AllowDismissCardRead" + ct + ": false," + ct + "CardReadTimeout" + ct + ": 30," + ct + "SkipAmountCash" + ct + ": true," + ct + "CancelPaymentLater" + ct + ": true," + ct + "AskCustomer" + ct + ": false," + ct + "SendResponseBeforePrint" + ct + ": true," + ct + "TryAgainOnPaymentFailure" + ct + ": false," + ct + "AddedSaleItems" + ct + ": [{" + ct + "Name" + ct + ": " + ct + prmislemadi + ct + "," + ct + "IsGeneric" + ct + ": false," + ct + "UnitCode" + ct + ": " + ct + birim + ct + "," + ct + "TaxGroupCode" + ct + ": " + ct + "KDV20" + ct + "," + ct + "ItemQuantity" + ct + ": 1," + ct + "UnitPriceAmount" + ct + ": " + tutar.ToString() + "," + ct + "GrossPriceAmount" + ct + ": " + tutar.ToString() + "," + ct + "TotalPriceAmount" + ct + ": " + tutar.ToString() + "," + ct + "ReservedText" + ct + ": " + ct + "TEST0001" + ct + "," + ct + "PriceEffect" + ct + ": {}}]," + ct + "ReceiptInformation" + ct + ":{" + ct + "ReceiptImageEnabled" + ct + ":true, "+ ct + "ReceiptWidth" + ct + ":" + ct + "80mm" + ct + "} " + customerpart + " }}";
+                parametre = SatisIstegiOlustur(CihazSeriNo, odemetipi, (decimal)tutar);
             }
-
 
             if (prmAsama == "GUNSONU")
             {

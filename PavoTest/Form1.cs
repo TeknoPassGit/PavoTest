@@ -29,6 +29,7 @@ namespace PavoTest
         public Form1()
         {
             InitializeComponent();
+            TopluTahsilatHazirla();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -46,6 +47,7 @@ namespace PavoTest
             edIP.KeyDown += edIP_KeyDown;
 
             IniFile("READ");
+            CsvListesiniYukle(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.csv"));
         }
 
         #region Cihaz hafızası
@@ -211,6 +213,7 @@ namespace PavoTest
         {
             int islem = 0;
             if (rbOdemeKK.Checked) islem = 1;
+            if (rbOdemeHgs.Checked) islem = PavoPay.HgsIslemTipi;
             if (rbOdemeGunSonu.Checked) islem = 2;
             if (rbOdemeIptal.Checked) islem = 3;
             if (rbOdemeParametre.Checked) islem = 4;
@@ -222,6 +225,35 @@ namespace PavoTest
             if (rbEnterKiosk.Checked) islem = 12;
             if (rbFisYaz.Checked) islem = 13;
 
+            double tahsilatTutari = myPay.StrToFloatDef(edTutar.Text, 0);
+            myPay.SatisKalemleri = new List<PavoPay.SatisKalemi>();
+            if (islem == 0 || islem == 1 || islem == PavoPay.HgsIslemTipi)
+            {
+                try
+                {
+                    List<PavoPay.SatisKalemi> kalemler;
+                    if (topluTahsilat.Checked)
+                    {
+                        tahsilatListesi.EndEdit();
+                        kalemler = KalemleriOku();
+                    }
+                    else
+                    {
+                        decimal tutar;
+                        if (string.IsNullOrWhiteSpace(edIslemAdi.Text) || !TutarOku(edTutar.Text, out tutar))
+                            throw new ArgumentException("İşlem adı ve sıfırdan büyük, en fazla iki ondalıklı tutar giriniz.");
+                        kalemler = new List<PavoPay.SatisKalemi> { new PavoPay.SatisKalemi(edIslemAdi.Text.Trim(), tutar) };
+                    }
+                    tahsilatTutari = (double)kalemler.Sum(x => x.Tutar);
+                    myPay.SatisKalemleri = kalemler;
+                }
+                catch (Exception ex) when (ex is ArgumentException || ex is OverflowException)
+                {
+                    MessageBox.Show(ex is OverflowException ? "Toplam tutar çok büyük." : ex.Message, "Tahsilat", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+            myPay.toplamhatasayac = 3;
             myPay.prmpavoislemucreti = edIslemAdi.Text;
             myPay.prmAsama = "PAIR";
             myPay.prmislemadi = edIslemAdi.Text;
@@ -261,7 +293,7 @@ namespace PavoTest
                 myPay.secilenCari.EFATURA = chEFATURA.Checked;
             }
 
-            myPay.OdemeAl(edIP.Text, islem, myPay.StrToFloatDef(edTutar.Text,0), edSeriNo.Text, PavoYanit);
+            myPay.OdemeAl(edIP.Text, islem, tahsilatTutari, edSeriNo.Text, PavoYanit);
         }
 
         public void IniWriteValue(string path, string Section, string Key, string Value)
